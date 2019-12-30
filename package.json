@@ -1,0 +1,19 @@
+{
+  "name": "graphql-react-blog",
+  "version": "1.0.0",
+  "description": "react blog built using graphql and mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akhil9tiet/graphql-react-blog.git"
+  },
+  "author": "akhil gupta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akhil9tiet/graphql-react-blog/issues"
+  },
+  "homepage": "https://github.com/akhil9tiet/graphql-react-blog#readme"
+}
