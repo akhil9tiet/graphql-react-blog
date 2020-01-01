@@ -14,6 +14,37 @@ const app = express();
 
 app.use(bodyParser.json());
 
+const events = (eventIds) => {
+	return Event.find({ _id: { $in: eventIds } })
+		.then((events) => {
+			return events.map((event) => {
+				return {
+					...event._doc,
+					_id: event.id,
+					creator: user.bind(this, event.creator) //creator does not hold single value but will call a function when you try to access it
+				};
+			});
+		})
+		.catch((err) => {
+			throw err;
+		});
+};
+
+//logic to fetch user by ID
+const user = (userId) => {
+	return User.findById(userId)
+		.then((user) => {
+			return {
+				...user._doc,
+				_id: user.id,
+				createdEvents: events.bind(this, user._doc.createdEvents)
+			};
+		})
+		.catch((err) => {
+			throw err;
+		});
+};
+
 // app.get('/', (req, res, next) =>{
 //   res.send("hello world");
 // })
@@ -28,12 +59,14 @@ app.use(
         description: String!
         price: Float!
         date: String!
+        creator: User!
       }
 
       type User{
         _id: ID!
         email: String!
         password: String
+        createdEvents: [Event!]
       }
 
       input EventInput {
@@ -65,15 +98,26 @@ app.use(
 		//resolver
 		rootValue: {
 			events: () => {
-				return Event.find()
-					.then((events) => {
-						return events.map((event) => {
-							return { ...event._doc, _id: event.id };
-						});
-					})
-					.catch((err) => {
-						throw err;
-					});
+				return (
+					Event.find()
+						//.populate('creator') //mongoose function populate will populate any relation it knows
+						.then((events) => {
+							return events.map((event) => {
+								return {
+									...event._doc,
+									_id: event.id,
+									creator: user.bind(this, event._doc.creator)
+									// {
+									// 	...event._doc.creator._doc,
+									// 	_id: event._doc.creator.id
+									// }
+								};
+							});
+						})
+						.catch((err) => {
+							throw err;
+						})
+				);
 			},
 			createEvent: (args) => {
 				// const event = {
@@ -95,7 +139,11 @@ app.use(
 				return event
 					.save()
 					.then((result) => {
-						createdEvent = { ...result._doc, _id: result._doc._id.toString() };
+						createdEvent = {
+							...result._doc,
+							_id: result._doc._id.toString(),
+							creator: user.bind(this, result._doc.creator)
+						};
 						return User.findById('5e0ae448bcb3823a7fe0cb63');
 					})
 					.then((user) => {
