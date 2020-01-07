@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import './Auth.css';
 import AuthContext from '../context/auth-context';
 
@@ -22,18 +23,18 @@ class AuthPage extends Component {
 	};
 
 	submitHandler = (event) => {
-		event.preventDefault(); //to make sure no default gets sent
+		event.preventDefault();
 		const email = this.emailEl.current.value;
 		const password = this.passwordEl.current.value;
-		//validation
+
 		if (email.trim().length === 0 || password.trim().length === 0) {
 			return;
 		}
-		// console.log(email, ":", password);
+
 		let requestBody = {
 			query: `
-        query{
-          login(email: "${email}, password: "${password}"){
+        query {
+          login(email: "${email}", password: "${password}") {
             userId
             token
             tokenExpiration
@@ -45,7 +46,7 @@ class AuthPage extends Component {
 		if (!this.state.isLogin) {
 			requestBody = {
 				query: `
-          mutation{
+          mutation {
             createUser(userInput: {email: "${email}", password: "${password}"}) {
               _id
               email
@@ -86,17 +87,16 @@ class AuthPage extends Component {
 		return (
 			<form className='auth-form' onSubmit={this.submitHandler}>
 				<div className='form-control'>
-					<label htmlFor='email'>Email</label>
+					<label htmlFor='email'>E-Mail</label>
 					<input type='email' id='email' ref={this.emailEl} />
 				</div>
 				<div className='form-control'>
 					<label htmlFor='password'>Password</label>
 					<input type='password' id='password' ref={this.passwordEl} />
 				</div>
-				<div className='form-action'>
+				<div className='form-actions'>
 					<button type='submit'>Submit</button>
 					<button type='button' onClick={this.switchModeHandler}>
-						{' '}
 						Switch to {this.state.isLogin ? 'Signup' : 'Login'}
 					</button>
 				</div>
