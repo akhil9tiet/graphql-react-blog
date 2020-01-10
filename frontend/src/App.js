@@ -8,6 +8,7 @@ import MainNavigation from './components/Navigation/MainNavigation';
 import AuthContext from './context/auth-context';
 
 import './App.css';
+import FetchRandomUser from './randomUserAPI/FetchRandomUser';
 
 class App extends Component {
 	state = {
@@ -42,6 +43,7 @@ class App extends Component {
 								{this.state.token && <Redirect from='/auth' to='/events' exact />}
 								{!this.state.token && <Route path='/auth' component={AuthPage} />}
 								<Route path='/events' component={EventsPage} />
+                <Route path='/randomUser' component = {FetchRandomUser} />
 								{this.state.token && <Route path='/bookings' component={BookingsPage} />}
 							</Switch>
 						</main>
